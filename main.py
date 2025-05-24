@@ -9,18 +9,25 @@ import google.generativeai as genai
 from dotenv import load_dotenv, find_dotenv
 import json
 
-# === Load environment variables ===
+# === Load environment variables safely ===
 env_path = find_dotenv()
-print(f"Looking for .env file at: {env_path}")
-load_dotenv(env_path)
+if env_path:
+    print(f"Loading .env file at: {env_path}")
+    load_dotenv(env_path)
+else:
+    print("No .env file found, using environment variables directly")
+
+print(f".env file exists: {os.path.exists('.env')}")
+if os.path.exists('.env'):
+    print(f".env file size: {os.path.getsize('.env')} bytes")
+else:
+    print(".env file not found, skipping size check.")
 
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
 GEMINI_KEY = os.getenv("GEMINI_KEY")
 
 # Debug prints for environment variables
 print("\nEnvironment Variables Check:")
-print(f".env file exists: {os.path.exists('.env')}")
-print(f".env file size: {os.path.getsize('.env')} bytes")
 print(f"SERPAPI_KEY exists: {'SERPAPI_KEY' in os.environ}")
 print(f"SERPAPI_KEY value: {SERPAPI_KEY}")
 print(f"SERPAPI_KEY length: {len(SERPAPI_KEY) if SERPAPI_KEY else 0}")
@@ -99,18 +106,7 @@ def index():
             
             try:
                 search = GoogleSearch(params)
-                raw_results = search.get_raw_json()  # Get raw response first
-                print(f"Raw API Response: {raw_results[:500]}...")  # Print first 500 chars
-                
-                # Try to parse the response
-                try:
-                    results = json.loads(raw_results)
-                except json.JSONDecodeError as e:
-                    print(f"JSON Parse Error: {str(e)}")
-                    print(f"Raw Response: {raw_results}")
-                    flash('Error processing search results. Please try again.', 'error')
-                    return redirect(url_for('index'))
-                
+                results = search.get_dict()  # directly get dict, no JSON parsing needed
                 print(f"Parsed API Response: {results}")  # Debug print
             except Exception as e:
                 print(f"API Request Error: {str(e)}")
