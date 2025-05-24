@@ -4,4 +4,4 @@ beautifulsoup4
 pandas
 python-dotenv
 google-generativeai
-serpapi==2.1.0
+google-search-results
