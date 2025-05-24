@@ -37,7 +37,7 @@ print(f"GEMINI_KEY length: {len(GEMINI_KEY) if GEMINI_KEY else 0}\n")
 
 # === Configure Gemini ===
 genai.configure(api_key=GEMINI_KEY)
-model = genai.GenerativeModel("gemini-2.0-flash")
+model = genai.GenerativeModel("gemini-pro")
 
 # === Flask App Setup ===
 app = Flask(__name__)
